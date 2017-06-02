@@ -35,7 +35,6 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -160,27 +159,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         List<String> permissionNeeds= Arrays.asList("user_photos", "email","user_friends");
         LoginManager.getInstance().logInWithReadPermissions(this,permissionNeeds);
 
-        accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(
-                    AccessToken oldAccessToken,
-                    AccessToken currentAccessToken) {
-                // Set the access token using
-                // currentAccessToken when it's loaded or set.
-                Toast.makeText(LoginActivity.this, "CurrentAccessTokenChanged", Toast.LENGTH_SHORT).show();
-            }
-        };
-        // If the access token is available already assign it.
-        accessToken = AccessToken.getCurrentAccessToken();
-
-        profileTracker = new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(
-                    Profile oldProfile,
-                    Profile currentProfile) {
-                Toast.makeText(LoginActivity.this, "個人資料變更", Toast.LENGTH_SHORT).show();
-            }
-        };
+//        accessTokenTracker = new AccessTokenTracker() {
+//            @Override
+//            protected void onCurrentAccessTokenChanged(
+//                    AccessToken oldAccessToken,
+//                    AccessToken currentAccessToken) {
+//                // Set the access token using
+//                // currentAccessToken when it's loaded or set.
+//                Toast.makeText(LoginActivity.this, "CurrentAccessTokenChanged", Toast.LENGTH_SHORT).show();
+//            }
+//        };
+//        // If the access token is available already assign it.
+//        accessToken = AccessToken.getCurrentAccessToken();
+//
+//        profileTracker = new ProfileTracker() {
+//            @Override
+//            protected void onCurrentProfileChanged(
+//                    Profile oldProfile,
+//                    Profile currentProfile) {
+//                Toast.makeText(LoginActivity.this, "個人資料變更", Toast.LENGTH_SHORT).show();
+//            }
+//        };
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.fb_login_button);
         loginButton.registerCallback(callbackManager,facebookCallback);
