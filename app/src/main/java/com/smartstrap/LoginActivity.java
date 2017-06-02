@@ -3,6 +3,7 @@ package com.smartstrap;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,8 +30,21 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -62,10 +77,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
+    CallbackManager callbackManager;
+    AccessTokenTracker accessTokenTracker;
+    AccessToken accessToken;
+    ProfileTracker profileTracker;
+    FacebookCallback facebookCallback = new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+            goToHomePage();
+        }
+
+        @Override
+        public void onCancel() { }
+
+        @Override
+        public void onError(FacebookException error) {
+            Log.e("fb", "fb login error", error);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        FBLoginInit();
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -93,6 +129,55 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+    public void FBLoginInit(){
+        callbackManager = CallbackManager.Factory.create();
+        //自動偵測目前狀態進行登入
+        LoginManager.getInstance().registerCallback(callbackManager,facebookCallback);
+        List<String> permissionNeeds= Arrays.asList("user_photos", "email","user_friends");
+        LoginManager.getInstance().logInWithReadPermissions(this,permissionNeeds);
+
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(
+                    AccessToken oldAccessToken,
+                    AccessToken currentAccessToken) {
+                // Set the access token using
+                // currentAccessToken when it's loaded or set.
+                Toast.makeText(LoginActivity.this, "CurrentAccessTokenChanged", Toast.LENGTH_SHORT).show();
+            }
+        };
+        // If the access token is available already assign it.
+        accessToken = AccessToken.getCurrentAccessToken();
+
+        profileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(
+                    Profile oldProfile,
+                    Profile currentProfile) {
+                Toast.makeText(LoginActivity.this, "個人資料變更", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        LoginButton loginButton = (LoginButton) findViewById(R.id.fb_login_button);
+        loginButton.registerCallback(callbackManager,facebookCallback);
+    }
+
+    private void goToHomePage(){
+        Toast.makeText(getApplicationContext(),getResources().getString(R.string.loginSuccessToast),
+                Toast.LENGTH_LONG).show();
+        Intent intent = new Intent();
+        intent.setClass(LoginActivity.this, HomeActivity.class);
+        startActivity(intent);
+    }
+
+
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {

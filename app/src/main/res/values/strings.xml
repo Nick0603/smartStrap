@@ -13,4 +13,11 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+
+    <string name="facebook_app_id">1307248429370517</string>
+    <string name="fb_login_protocol_scheme">fb1307248429370517</string>
+    <string name="loginUrl">http://7a524f7f.ngrok.io/login.php</string>
+    <string name="loginSuccessData">Success</string>
+    <string name="loginSuccessToast">登入成功</string>
 </resources>
