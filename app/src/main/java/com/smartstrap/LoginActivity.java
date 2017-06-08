@@ -261,6 +261,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
+
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
@@ -451,11 +452,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     in.close();
 
+                    String getData = sb.toString();
                     String successData = getResources().getString(R.string.loginSuccessData);
-                    if(sb.toString() == successData){
+                    if(getData.equals(successData)){
                         return true;
                     }else{
                         loginErrorStatus =  LOGIN_RESULT_FAIL;
+                        Log.e(TAG, new String("false : Login false  :" + sb.toString()));
                     }
 
                 }else{
