@@ -14,17 +14,21 @@ public class HomeActivity extends FragmentActivity {
     private FragmentTransaction transaction;
     private FragmentHome fragmentHome = new FragmentHome();
     private FragmentSetting fragmentSetting = new FragmentSetting();
+
+    private String name = "Nick";
+
+
     private View.OnClickListener changeView = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             transaction = fragMgr.beginTransaction();
             switch (view.getId()) {
                 case R.id.btnHome:
-                    transaction.replace(R.id.frameLayout, fragmentHome, "fragment1");
+                    transaction.replace(R.id.frameLayout, fragmentHome);
 
                     break;
                 case R.id.btnSetting:
-                    transaction.replace(R.id.frameLayout, fragmentSetting, "fragment2");
+                    transaction.replace(R.id.frameLayout, fragmentSetting);
                     break;
             }
 //呼叫commit讓變更生效。
@@ -48,5 +52,15 @@ public class HomeActivity extends FragmentActivity {
         btnSetting.setOnClickListener(changeView);
     }
 
+
+    public String getName()
+    {
+        return this.name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 
 }
