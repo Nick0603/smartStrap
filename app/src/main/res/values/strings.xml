@@ -2,11 +2,6 @@
 
 
     <string name="app_name">SmartStrap</string>
-    <string name="title_paired_devices">Paired Devices</string>
-    <string name="title_other_devices">Other Available Devices</string>
-    <string name="button_scan">Scan for devices</string>
-
-
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -28,4 +23,35 @@
     <string name="loginUrl">http://smartstrap2017.azurewebsites.net/login.php</string>
     <string name="loginSuccessData">Success</string>
     <string name="loginSuccessToast">登入成功</string>
+
+
+    <!--  BluetoothChat -->
+    <string name="send">Send</string>
+    <string name="not_connected">無連接到藍芽裝置</string>
+    <string name="title_disConnected">尚未連線</string>
+    <string name="title_connecting">連線中...</string>
+    <string name="title_connected">已連線</string>
+
+    <string name="alertATitle">警告A</string>
+    <string name="alertAContent">a 值已經超過閥值了</string>
+    <string name="alertAPositiveBtn">前往急救教學</string>
+    <string name="alertANegativeBtn">取消</string>
+    <string name="alertBTitle">警告B</string>
+    <string name="alertBContent">b 值已經超過閥值了</string>
+    <string name="alertBTDisConnTitle">藍芽斷線</string>
+    <string name="alertBTDisConnContent">現在已跟arduino中斷連線</string>
+    <string name="alertBPositiveBtn">確認</string>
+    <string name="alertBTPositiveBtn">前往設定頁面</string>
+    <string name="alertBTNegativeBtn">取消</string>
+
+
+    <!--  DeviceListActivity -->
+    <string name="scanning">scanning for devices...</string>
+    <string name="select_device">select a device to connect</string>
+    <string name="none_paired">No devices have been paired</string>
+    <string name="none_found">No devices found</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="button_scan">Scan for devices</string>
+
 </resources>

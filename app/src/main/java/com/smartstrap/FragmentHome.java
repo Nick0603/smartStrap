@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 /**
@@ -20,23 +19,13 @@ public class FragmentHome extends Fragment
     private static final String TAG = "FragmentHome";
     Button btn;
     TextView tv_output;
-    EditText et_name;
     HomeActivity Acivity;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, null);
         btn = (Button)view.findViewById(R.id.button);
         tv_output = (TextView)view.findViewById(R.id.textView1);
-        et_name = (EditText)view.findViewById(R.id.editText);
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = et_name.getText().toString();
-                Acivity.setName(text);
-                tv_output.setText(text);
-            }
-        });
         return view;
     }
 

@@ -1,14 +1,57 @@
 package com.smartstrap;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
+import com.smartstrap.bluetooth.BluetoothService;
+import com.smartstrap.bluetooth.Constants;
 
 
 public class HomeActivity extends FragmentActivity {
+
+    /*Name of the connected device*/
+    public static String mConnectedDeviceName = "";
+    public static BluetoothAdapter mBluetoothAdapter = null;
+    public static BluetoothService mBlueToothService = null;
+
+    // Intent request codes
+    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
+    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
+    private static final int REQUEST_ENABLE_BT = 3;
+
+
+    public static long lastAlertTime = 0;
+    public static final int alertDelayTime = 3 * 1000;
+    public static boolean isAlertDialog  = false;
+    public static MediaPlayer myMediaPlaye;
+    public static final long[] pattern = {500, 1000, 500,1000};
+    public static Vibrator myVibrator;
+
+//    public static SharedPreferences spref = null;
+//    public static SharedPreferences.Editor editor = null;
+    public static final String SharePreSecure = "lastConnSecure";
+    public static final String SharePreAddress = "lastConnAddress";
+
+    public static final String AlertACondition = "a";
+    public static final String AlertBCondition = "b";
+
+
+
 
     private FragmentManager fragMgr;
     private FragmentTransaction transaction;
@@ -41,6 +84,13 @@ public class HomeActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // 元件建立
+        myVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        myMediaPlaye = MediaPlayer.create(this, R.raw.alert);
+        lastAlertTime = System.currentTimeMillis();
+
+
+
         fragMgr = getSupportFragmentManager();
         fragMgr.beginTransaction()
                 .add(R.id.frameLayout, fragmentHome)
@@ -50,17 +100,187 @@ public class HomeActivity extends FragmentActivity {
         ImageButton btnSetting = (ImageButton)findViewById(R.id.btnSetting);
         btnHome.setOnClickListener(changeView);
         btnSetting.setOnClickListener(changeView);
+
+        //bluetooth
+        // 藍芽建立
+        HomeActivity.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (HomeActivity.mBluetoothAdapter == null) {
+            Activity activity = this;
+            Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            activity.finish();
+        }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Performing this check in onResume() covers the case in which BT was
+        // not enabled during onStart(), so we were paused to enable it...
+        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
+        if (HomeActivity.mBlueToothService != null) {
+            // Only if the state is STATE_NONE, do we know that we haven't started already
+            if (HomeActivity.mBlueToothService.getState() == BluetoothService.STATE_NONE) {
+                // Start the Bluetooth services
+                HomeActivity.mBlueToothService.start();
+            }
+        }
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // 藍芽功能偵測  => 開啟
+        if (!HomeActivity.mBluetoothAdapter.isEnabled()) {
+            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+            // Otherwise, setup the chat session
+        } else if (HomeActivity.mBlueToothService == null) {
+            // setup mBlueToothService
+            HomeActivity.mBlueToothService = new BluetoothService(this, mHandler);
+        } else {
+            // update mHandler
+            HomeActivity.mBlueToothService.mHandler = mHandler;
+        }
+    }
+
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Constants.MESSAGE_STATE_CHANGE:
+                    switch (msg.arg1) {
+                        case BluetoothService.STATE_CONNECTED:
+                            Toast.makeText(HomeActivity.this, "與" + HomeActivity.mConnectedDeviceName + "裝置連線成功", Toast.LENGTH_SHORT).show();
+                            break;
+                        case BluetoothService.STATE_NONE:
+                            HomeActivity.mConnectedDeviceName = "";
+                            break;
+                    }
+                    break;
+
+                case Constants.MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage = new String(readBuf, 0 , msg.arg1);
+
+                    if(readMessage.equals(AlertACondition) && HomeActivity.isAlertDialog == false && System.currentTimeMillis() - lastAlertTime > alertDelayTime){
+                        alertStart();
+                        new android.app.AlertDialog.Builder(HomeActivity.this)
+                                .setTitle(R.string.alertATitle)
+                                .setMessage(R.string.alertAContent)
+                                .setPositiveButton(R.string.alertAPositiveBtn, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+//                                                                                  startActivity(new Intent(getApplicationContext(),CPRActivity.class));
+                                        Toast.makeText(HomeActivity.this, "正向按鈕", Toast.LENGTH_SHORT).show();
+                                        alertStop();
+                                    }
+                                })
+                                .setNegativeButton(R.string.alertANegativeBtn, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        alertStop();
+                                    }
+                                })
+                                .setOnCancelListener(new DialogInterface.OnCancelListener(){
+                                    @Override
+                                    public void onCancel(DialogInterface dialog) {
+                                        alertStop();
+                                    }
+                                })
+                                .show();
+                    }else if(readMessage.equals(AlertBCondition) && HomeActivity.isAlertDialog == false && System.currentTimeMillis() - lastAlertTime > alertDelayTime){
+                        alertStart();
+                        new android.app.AlertDialog.Builder(HomeActivity.this)
+                                .setTitle(R.string.alertBTitle)
+                                .setMessage(R.string.alertBContent)
+                                .setPositiveButton(R.string.alertBPositiveBtn, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        alertStop();
+                                    }
+                                })
+
+                                .setOnCancelListener(new DialogInterface.OnCancelListener(){
+                                    @Override
+                                    public void onCancel(DialogInterface dialog) {
+                                        alertStop();
+                                    }
+                                })
+                                .show();
+                    }
+
+                    break;
+                case Constants.MESSAGE_DEVICE_NAME:
+                    // save the connected device's name
+                    HomeActivity.mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
+                    break;
+
+                case Constants.MESSAGE_CONNLOST:
+                    alertStart();
+                    new AlertDialog.Builder(HomeActivity.this)
+                            .setTitle(R.string.alertBTDisConnTitle)
+                            .setMessage(R.string.alertBTDisConnContent)
+                            .setPositiveButton(R.string.alertBTPositiveBtn, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(HomeActivity.this, "正向按鈕", Toast.LENGTH_SHORT).show();
+                                    alertStop();
+                                }
+                            })
+                            .setNegativeButton(R.string.alertBTNegativeBtn, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    alertStop();
+                                }
+                            })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener(){
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    alertStop();
+                                }
+                            })
+                            .show();
+                    break;
+                case Constants.MESSAGE_CONNFAIL:
+                    String deviceName = msg.getData().getString(Constants.DEVICE_NAME);
+                    Toast.makeText(HomeActivity.this,"與" + deviceName + "裝置連線失敗", Toast.LENGTH_SHORT).show();
+                    break;
+                case Constants.MESSAGE_TOAST:
+                    String strToast = msg.getData().getString(Constants.TOAST);
+                    Toast.makeText(HomeActivity.this,strToast, Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
+
+    public static void alertStart(){
+        myMediaPlaye.start();
+        myMediaPlaye.setLooping(true);
+        isAlertDialog = true;
+        myVibrator.vibrate(pattern, 0);
+        lastAlertTime = System.currentTimeMillis();
+    }
+
+    public static void alertStop(){
+        isAlertDialog = false;
+        myMediaPlaye.pause();
+        myMediaPlaye.setLooping(false);
+        myVibrator.cancel();
+    }
 
     public String getName()
     {
         return this.name;
     }
-
     public void setName(String name)
     {
         this.name = name;
     }
+
+
+
+
 
 }
