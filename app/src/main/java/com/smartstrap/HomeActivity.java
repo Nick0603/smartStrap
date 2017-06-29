@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,12 +21,10 @@ import android.widget.Toast;
 
 import com.smartstrap.bluetooth.BluetoothService;
 import com.smartstrap.bluetooth.Constants;
-
+import com.smartstrap.bluetooth.BluetoothInfo;
 
 public class HomeActivity extends FragmentActivity {
 
-    /*Name of the connected device*/
-    public static String mConnectedDeviceName = "";
     public static BluetoothAdapter mBluetoothAdapter = null;
     public static BluetoothService mBlueToothService = null;
 
@@ -34,31 +33,19 @@ public class HomeActivity extends FragmentActivity {
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
+    public  MediaPlayer myMediaPlaye;
+    public  final long[] pattern = {500, 1000, 500,1000};
+    public  Vibrator myVibrator;
 
-    public static long lastAlertTime = 0;
-    public static final int alertDelayTime = 3 * 1000;
-    public static boolean isAlertDialog  = false;
-    public static MediaPlayer myMediaPlaye;
-    public static final long[] pattern = {500, 1000, 500,1000};
-    public static Vibrator myVibrator;
-
-//    public static SharedPreferences spref = null;
-//    public static SharedPreferences.Editor editor = null;
-    public static final String SharePreSecure = "lastConnSecure";
-    public static final String SharePreAddress = "lastConnAddress";
-
-    public static final String AlertACondition = "a";
-    public static final String AlertBCondition = "b";
-
-
-
+    public  SharedPreferences spref = null;
+    public  SharedPreferences.Editor editor = null;
+    public  final String SharePreSecure = "lastConnSecure";
+    public  final String SharePreAddress = "lastConnAddress";
 
     private FragmentManager fragMgr;
     private FragmentTransaction transaction;
     private FragmentHome fragmentHome = new FragmentHome();
     private FragmentSetting fragmentSetting = new FragmentSetting();
-
-    private String name = "Nick";
 
 
     private View.OnClickListener changeView = new View.OnClickListener() {
@@ -87,9 +74,6 @@ public class HomeActivity extends FragmentActivity {
         // 元件建立
         myVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         myMediaPlaye = MediaPlayer.create(this, R.raw.alert);
-        lastAlertTime = System.currentTimeMillis();
-
-
 
         fragMgr = getSupportFragmentManager();
         fragMgr.beginTransaction()
@@ -143,7 +127,6 @@ public class HomeActivity extends FragmentActivity {
         }
     }
 
-
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -151,10 +134,17 @@ public class HomeActivity extends FragmentActivity {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
-                            Toast.makeText(HomeActivity.this, "與" + HomeActivity.mConnectedDeviceName + "裝置連線成功", Toast.LENGTH_SHORT).show();
+//                            TV_connectStatus.setText(R.string.title_connected);
+//                            TV_deviceName.setText(HomeActivity.mConnectedDeviceName);
+                            Toast.makeText(HomeActivity.this, "與" + BluetoothInfo.DEVICE_NAME + "裝置連線成功", Toast.LENGTH_SHORT).show();
+                            break;
+                        case BluetoothService.STATE_CONNECTING:
+//                            TV_connectStatus.setText(R.string.title_connecting);
+                        case BluetoothService.STATE_LISTEN:
                             break;
                         case BluetoothService.STATE_NONE:
-                            HomeActivity.mConnectedDeviceName = "";
+//                            TV_connectStatus.setText(R.string.title_disConnected);
+//                            TV_deviceName.setText("");
                             break;
                     }
                     break;
@@ -163,8 +153,7 @@ public class HomeActivity extends FragmentActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0 , msg.arg1);
-
-                    if(readMessage.equals(AlertACondition) && HomeActivity.isAlertDialog == false && System.currentTimeMillis() - lastAlertTime > alertDelayTime){
+                    if(readMessage.equals( getResources().getString(R.string.alertACondition) )){
                         alertStart();
                         new android.app.AlertDialog.Builder(HomeActivity.this)
                                 .setTitle(R.string.alertATitle)
@@ -190,31 +179,10 @@ public class HomeActivity extends FragmentActivity {
                                     }
                                 })
                                 .show();
-                    }else if(readMessage.equals(AlertBCondition) && HomeActivity.isAlertDialog == false && System.currentTimeMillis() - lastAlertTime > alertDelayTime){
-                        alertStart();
-                        new android.app.AlertDialog.Builder(HomeActivity.this)
-                                .setTitle(R.string.alertBTitle)
-                                .setMessage(R.string.alertBContent)
-                                .setPositiveButton(R.string.alertBPositiveBtn, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        alertStop();
-                                    }
-                                })
-
-                                .setOnCancelListener(new DialogInterface.OnCancelListener(){
-                                    @Override
-                                    public void onCancel(DialogInterface dialog) {
-                                        alertStop();
-                                    }
-                                })
-                                .show();
                     }
 
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    HomeActivity.mConnectedDeviceName = msg.getData().getString(Constants.DEVICE_NAME);
                     break;
 
                 case Constants.MESSAGE_CONNLOST:
@@ -225,7 +193,11 @@ public class HomeActivity extends FragmentActivity {
                             .setPositiveButton(R.string.alertBTPositiveBtn, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Toast.makeText(HomeActivity.this, "正向按鈕", Toast.LENGTH_SHORT).show();
+
+                                    transaction = fragMgr.beginTransaction();
+                                    transaction.replace(R.id.frameLayout, fragmentSetting);
+                                    transaction.commit();
+
                                     alertStop();
                                 }
                             })
@@ -255,32 +227,16 @@ public class HomeActivity extends FragmentActivity {
         }
     };
 
-    public static void alertStart(){
+    public  void alertStart(){
         myMediaPlaye.start();
         myMediaPlaye.setLooping(true);
-        isAlertDialog = true;
         myVibrator.vibrate(pattern, 0);
-        lastAlertTime = System.currentTimeMillis();
     }
 
-    public static void alertStop(){
-        isAlertDialog = false;
+    public  void alertStop(){
         myMediaPlaye.pause();
         myMediaPlaye.setLooping(false);
         myVibrator.cancel();
     }
-
-    public String getName()
-    {
-        return this.name;
-    }
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-
-
-
 
 }

@@ -32,15 +32,14 @@
     <string name="title_connecting">連線中...</string>
     <string name="title_connected">已連線</string>
 
-    <string name="alertATitle">警告A</string>
-    <string name="alertAContent">a 值已經超過閥值了</string>
-    <string name="alertAPositiveBtn">前往急救教學</string>
+    <string name="alertACondition">A</string>
+    <string name="alertATitle">找尋手機事件</string>
+    <string name="alertAContent">接收到A，你的手機正在震動及發出聲音( 無靜音狀態時 )</string>
+    <string name="alertAPositiveBtn">正面按鈕</string>
     <string name="alertANegativeBtn">取消</string>
-    <string name="alertBTitle">警告B</string>
-    <string name="alertBContent">b 值已經超過閥值了</string>
-    <string name="alertBTDisConnTitle">藍芽斷線</string>
-    <string name="alertBTDisConnContent">現在已跟arduino中斷連線</string>
-    <string name="alertBPositiveBtn">確認</string>
+
+    <string name="alertBTDisConnTitle">藍芽中斷</string>
+    <string name="alertBTDisConnContent">與智慧錶帶藍芽連線中斷了，請檢查一下出了什麼問題</string>
     <string name="alertBTPositiveBtn">前往設定頁面</string>
     <string name="alertBTNegativeBtn">取消</string>
 
