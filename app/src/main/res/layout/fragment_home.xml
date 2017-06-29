@@ -1,28 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="fragment1"
-        android:textSize="20sp" />
-
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name" />
+    <Button
+        android:id="@+id/btn_nextOne"
+        android:layout_width="63dp"
+        android:layout_height="129dp"
+        android:text="NextOne"
+        app:layout_constraintLeft_toRightOf="@+id/btn_package"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_package"
+        android:layout_marginTop="63dp"
+        app:layout_constraintHorizontal_bias="0.187" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Button" />
+        android:id="@+id/btn_lastOne"
+        android:layout_width="59dp"
+        android:layout_height="125dp"
+        android:text="lastOne"
+        android:layout_marginLeft="43dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_package"
+        android:layout_marginTop="65dp"
+        app:layout_constraintRight_toLeftOf="@+id/btn_package"
+        android:layout_marginRight="8dp" />
 
-</LinearLayout>
+    <ImageButton
+        android:id="@+id/btn_package"
+        android:layout_width="161dp"
+        android:layout_height="255dp"
+        android:layout_marginTop="128dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/com_facebook_button_like_background"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+</android.support.constraint.ConstraintLayout>
