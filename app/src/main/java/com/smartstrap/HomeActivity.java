@@ -134,17 +134,16 @@ public class HomeActivity extends FragmentActivity {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
-//                            TV_connectStatus.setText(R.string.title_connected);
-//                            TV_deviceName.setText(HomeActivity.mConnectedDeviceName);
+
+                            fragmentSetting.updateStatus();
                             Toast.makeText(HomeActivity.this, "與" + BluetoothInfo.DEVICE_NAME + "裝置連線成功", Toast.LENGTH_SHORT).show();
                             break;
                         case BluetoothService.STATE_CONNECTING:
-//                            TV_connectStatus.setText(R.string.title_connecting);
+                            fragmentSetting.updateStatus();
                         case BluetoothService.STATE_LISTEN:
                             break;
                         case BluetoothService.STATE_NONE:
-//                            TV_connectStatus.setText(R.string.title_disConnected);
-//                            TV_deviceName.setText("");
+                            fragmentSetting.updateStatus();
                             break;
                     }
                     break;
@@ -153,6 +152,10 @@ public class HomeActivity extends FragmentActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0 , msg.arg1);
+
+                    // 更新設定畫面的資訊
+                    fragmentSetting.updateReadStatus(readMessage);
+
                     if(readMessage.equals( getResources().getString(R.string.alertACondition) )){
                         alertStart();
                         new android.app.AlertDialog.Builder(HomeActivity.this)

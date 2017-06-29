@@ -18,6 +18,9 @@ import com.smartstrap.bluetooth.BluetoothInfo;
 import com.smartstrap.bluetooth.BluetoothService;
 import com.smartstrap.bluetooth.DeviceListActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Carson_Ho on 16/5/23.
  */
@@ -74,14 +77,7 @@ public class FragmentSetting extends Fragment {
         TV_reciveTime = (TextView) view.findViewById(R.id.TV_receiveTime);
         TV_connectStatus = (TextView) view.findViewById(R.id.TV_connectStatus);
         TV_deviceName = (TextView) view.findViewById(R.id.TV_deviceName);
-
-        if (HomeActivity.mBlueToothService.getState() == BluetoothService.STATE_CONNECTED) {
-            TV_connectStatus.setText("已連線");
-            TV_deviceName.setText(BluetoothInfo.DEVICE_NAME);
-        } else {
-            TV_connectStatus.setText("未連線");
-            TV_deviceName.setText("");
-        }
+        updateStatus();
 
         // Initialize the send button with a listener that for click events
         mSendButton.setOnClickListener(new View.OnClickListener() {
@@ -164,5 +160,28 @@ public class FragmentSetting extends Fragment {
         BluetoothDevice device = HomeActivity.mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
         HomeActivity.mBlueToothService.connect(device, secure);
+    }
+
+    public void updateStatus(){
+        if (HomeActivity.mBlueToothService.getState() == BluetoothService.STATE_CONNECTED) {
+            TV_connectStatus.setText(R.string.title_connected);
+            TV_deviceName.setText(BluetoothInfo.DEVICE_NAME);
+        }else if(HomeActivity.mBlueToothService.getState() == BluetoothService.STATE_CONNECTED){
+            TV_connectStatus.setText(R.string.title_connecting);
+            TV_deviceName.setText("");
+        }else{
+            TV_connectStatus.setText(R.string.title_disConnected);
+            TV_deviceName.setText("");
+        }
+    }
+
+    public void updateReadStatus(String readString){
+        TV_receiveMsg.setText(readString);
+
+        SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+        Date date = new Date();
+        String strDate = sdFormat.format(date);
+
+        TV_reciveTime.setText(strDate);
     }
 }
