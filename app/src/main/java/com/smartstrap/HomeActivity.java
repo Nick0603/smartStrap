@@ -46,19 +46,30 @@ public class HomeActivity extends FragmentActivity {
     private FragmentTransaction transaction;
     private FragmentHome fragmentHome = new FragmentHome();
     private FragmentSetting fragmentSetting = new FragmentSetting();
-
+    private FragmentPhone fragmentPhone = new FragmentPhone();
+    private FragmentLocation fragmentLocation = new FragmentLocation();
+    private FragmentQuestion fragmentQuestion = new FragmentQuestion();
 
     private View.OnClickListener changeView = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             transaction = fragMgr.beginTransaction();
             switch (view.getId()) {
+                case R.id.btn_phoneCall:
+                    transaction.replace(R.id.frameLayout, fragmentPhone);
+                    break;
+                case R.id.btn_location:
+                    transaction.replace(R.id.frameLayout, fragmentLocation);
+                    break;
                 case R.id.btnHome:
                     transaction.replace(R.id.frameLayout, fragmentHome);
 
                     break;
                 case R.id.btnSetting:
                     transaction.replace(R.id.frameLayout, fragmentSetting);
+                    break;
+                case R.id.btn_question:
+                    transaction.replace(R.id.frameLayout, fragmentQuestion);
                     break;
             }
 //呼叫commit讓變更生效。
@@ -80,10 +91,16 @@ public class HomeActivity extends FragmentActivity {
                 .add(R.id.frameLayout, fragmentHome)
                 .commit();
 
+        ImageButton btnPhone = (ImageButton)findViewById(R.id.btn_phoneCall);
+        ImageButton btnLocation = (ImageButton)findViewById(R.id.btn_location);
         ImageButton btnHome = (ImageButton)findViewById(R.id.btnHome);
         ImageButton btnSetting = (ImageButton)findViewById(R.id.btnSetting);
+        ImageButton btnQuestion = (ImageButton)findViewById(R.id.btn_question);
+        btnPhone.setOnClickListener(changeView);
+        btnLocation.setOnClickListener(changeView);
         btnHome.setOnClickListener(changeView);
         btnSetting.setOnClickListener(changeView);
+        btnQuestion.setOnClickListener(changeView);
 
         //bluetooth
         // 藍芽建立

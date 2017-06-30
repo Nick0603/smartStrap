@@ -10,13 +10,13 @@ import android.view.ViewGroup;
 /**
  * Created by Carson_Ho on 16/5/23.
  */
-public class FragmentHome extends Fragment
+public class FragmentQuestion extends Fragment
 {
 
-    private static final String TAG = "FragmentHome";
+    private static final String TAG = "FragmentQuestion";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, null);
+        View view = inflater.inflate(R.layout.fragment_question, null);
         return view;
     }
 
