@@ -7,23 +7,40 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.android.internal.telephony.ITelephony;
+import com.smartstrap.bluetooth.BluetoothInfo;
 import com.smartstrap.bluetooth.BluetoothService;
 import com.smartstrap.bluetooth.Constants;
-import com.smartstrap.bluetooth.BluetoothInfo;
+
+import java.lang.reflect.Method;
+
+import static android.Manifest.permission.CALL_PHONE;
+import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.READ_PHONE_STATE;
 
 public class HomeActivity extends FragmentActivity {
+
+
+    private static final String TAG = "HomeActivity";
+    TelephonyManager telephonyManager;
+    // 儲存目前來電狀態
+    static int phoneState = TelephonyManager.CALL_STATE_IDLE;
 
     public static BluetoothAdapter mBluetoothAdapter = null;
     public static BluetoothService mBlueToothService = null;
@@ -81,6 +98,16 @@ public class HomeActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        // 取得通話全縣
+        if (  !(isGetPression(READ_PHONE_STATE)  && isGetPression(CALL_PHONE) && isGetPression(READ_CONTACTS)) ) {
+
+            ActivityCompat.requestPermissions(HomeActivity.this, new String[] {READ_PHONE_STATE, CALL_PHONE,READ_CONTACTS}, PackageManager.PERMISSION_GRANTED);
+
+            return;
+        }
+        // 使用來掛斷電話
+        telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 
         // 元件建立
         myVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -199,6 +226,12 @@ public class HomeActivity extends FragmentActivity {
                                     }
                                 })
                                 .show();
+                    }else if(readMessage.equals( getResources().getString(R.string.alertBPhoneEndCondition))){
+                        if(phoneState == TelephonyManager.CALL_STATE_RINGING){
+                            endCall();
+                        }else{
+                            Toast.makeText(HomeActivity.this, "事件B：目前來電可以掛斷", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     break;
@@ -257,6 +290,28 @@ public class HomeActivity extends FragmentActivity {
         myMediaPlaye.pause();
         myMediaPlaye.setLooping(false);
         myVibrator.cancel();
+    }
+
+    boolean isGetPression(String pressionName){
+        return ActivityCompat.checkSelfPermission(HomeActivity.this, pressionName) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void endCall()
+    {
+        Class<TelephonyManager> c = TelephonyManager.class;
+        try
+        {
+            Method getITelephonyMethod = c.getDeclaredMethod("getITelephony", (Class[]) null);
+            getITelephonyMethod.setAccessible(true);
+            ITelephony iTelephony = null;
+            Log.e(TAG, "End call.");
+            iTelephony = (ITelephony ) getITelephonyMethod.invoke(telephonyManager, (Object[]) null);
+            iTelephony.endCall();
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, "Fail to answer ring call.", e);
+        }
     }
 
 }

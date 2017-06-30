@@ -57,8 +57,21 @@
             android:label="@string/select_device"
             android:theme="@android:style/Theme.Holo.Dialog"/>
 
+        <receiver android:name="com.smartstrap.PhoneStatReceiver">
+            <intent-filter android:priority="1000" >
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- 掛斷手機的權限 -->
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <!-- 讀content的權限 -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <!-- 讀取手機狀態的權限 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
 
 </manifest>

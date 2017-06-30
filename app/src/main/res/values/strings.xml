@@ -37,6 +37,8 @@
     <string name="alertAContent">接收到A，你的手機正在震動及發出聲音( 無靜音狀態時 )</string>
     <string name="alertAPositiveBtn">正面按鈕</string>
     <string name="alertANegativeBtn">取消</string>
+    <string name="alertBPhoneEndCondition">B</string>
+
 
     <string name="alertBTDisConnTitle">藍芽中斷</string>
     <string name="alertBTDisConnContent">與智慧錶帶藍芽連線中斷了，請檢查一下出了什麼問題</string>
