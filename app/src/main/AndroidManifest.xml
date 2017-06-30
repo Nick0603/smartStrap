@@ -73,5 +73,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
-
+    <!-- 調整音量權限 -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 </manifest>

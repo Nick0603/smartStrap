@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +39,16 @@ public class HomeActivity extends FragmentActivity {
 
 
     private static final String TAG = "HomeActivity";
+
+
+    public static final int RINGER_MODE_SILENT = 0;
+    public static final int RINGER_MODE_VIBRATE = 1;
+    public static final int RINGER_MODE_NORMAL = 2;
+
+    // 音量控制
+    private AudioManager audioManager;
+
+
     TelephonyManager telephonyManager;
     // 儲存目前來電狀態
     static int phoneState = TelephonyManager.CALL_STATE_IDLE;
@@ -106,6 +117,10 @@ public class HomeActivity extends FragmentActivity {
 
             return;
         }
+        //取得音量控制器
+        audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+
+
         // 使用來掛斷電話
         telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -232,6 +247,15 @@ public class HomeActivity extends FragmentActivity {
                         }else{
                             Toast.makeText(HomeActivity.this, "事件B：目前來電可以掛斷", Toast.LENGTH_SHORT).show();
                         }
+                    }else if(readMessage.equals( getResources().getString(R.string.alertDRingerNormalCondition))){
+                        Toast.makeText(HomeActivity.this, "事件C：聲音設定為聲音模式", Toast.LENGTH_SHORT).show();
+                        audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                    }else if(readMessage.equals( getResources().getString(R.string.alertCRingerSilentCondition))){
+                        Toast.makeText(HomeActivity.this, "事件D：聲音設定為靜音模式", Toast.LENGTH_SHORT).show();
+                        audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                    }else if(readMessage.equals( getResources().getString(R.string.alertDRingerVibrateCondition))){
+                        Toast.makeText(HomeActivity.this, "事件E：聲音設定為震動模式", Toast.LENGTH_SHORT).show();
+                        audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
                     }
 
                     break;

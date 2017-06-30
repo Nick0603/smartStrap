@@ -39,6 +39,9 @@
     <string name="alertANegativeBtn">取消</string>
     <string name="alertBPhoneEndCondition">B</string>
 
+    <string name="alertDRingerNormalCondition">C</string>
+    <string name="alertCRingerSilentCondition">D</string>
+    <string name="alertDRingerVibrateCondition">E</string>
 
     <string name="alertBTDisConnTitle">藍芽中斷</string>
     <string name="alertBTDisConnContent">與智慧錶帶藍芽連線中斷了，請檢查一下出了什麼問題</string>

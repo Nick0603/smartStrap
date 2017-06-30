@@ -18,10 +18,11 @@ import java.util.ArrayList;
 
 public class PhoneStatReceiver extends BroadcastReceiver{
 
-    final static String sendWatchPhoneCall4 = "EO";
-    final static String sendWatchPhoneCall3 = "DO";
-    final static String sendWatchPhoneCall2 = "CO";
-    final static String sendWatchPhoneCallEnd = "JR";
+    final static String sendWatchPhoneCall4 = "DP";
+    final static String sendWatchPhoneCall3 = "CO";
+    final static String sendWatchPhoneCall2 = "BO";
+    final static String sendWatchPhoneCall1 = "BO";
+    final static String sendWatchPhoneCallEnd = "JS";
 
     String TAG = "tag";
     static String LinePhoneNumber = "";
@@ -45,12 +46,9 @@ public class PhoneStatReceiver extends BroadcastReceiver{
 //                    editor.commit();
 //                    endCall();
 //                }
-                if(number.equals("0920909807")){
+                if(number.equals("0920909807") || number.equals("0928660419")){
                     sendMessage(sendWatchPhoneCall4);
                     Toast.makeText(context, "四級來電", Toast.LENGTH_SHORT).show();
-                }else if(number.equals("0928660419")){
-                    sendMessage(sendWatchPhoneCall3);
-                    Toast.makeText(context, "三級來電", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
