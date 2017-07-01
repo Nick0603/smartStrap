@@ -39,9 +39,14 @@
     <string name="alertANegativeBtn">取消</string>
     <string name="alertBPhoneEndCondition">B</string>
 
-    <string name="alertDRingerNormalCondition">C</string>
-    <string name="alertCRingerSilentCondition">D</string>
-    <string name="alertDRingerVibrateCondition">E</string>
+    <string name="alertRingerNormalCondition">C</string>
+    <string name="alertRingerSilentCondition">D</string>
+    <string name="alertRingerVibrateCondition">E</string>
+
+    <string name="recorderStart">F</string>
+    <string name="recorderStop">G</string>
+    <string name="recorderPlay">H</string>
+
 
     <string name="alertBTDisConnTitle">藍芽中斷</string>
     <string name="alertBTDisConnContent">與智慧錶帶藍芽連線中斷了，請檢查一下出了什麼問題</string>
@@ -58,5 +63,12 @@
     <string name="title_paired_devices">Paired Devices</string>
     <string name="title_other_devices">Other Available Devices</string>
     <string name="button_scan">Scan for devices</string>
+
+    <!--  Fragment AudioRecorder -->
+    <string name="Recording">Android Audio Recording Application</string>
+    <string name="start">start</string>
+    <string name="stop">stop</string>
+    <string name="play">play</string>
+
 
 </resources>

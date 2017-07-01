@@ -10,7 +10,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
@@ -29,11 +31,14 @@ import com.smartstrap.bluetooth.BluetoothInfo;
 import com.smartstrap.bluetooth.BluetoothService;
 import com.smartstrap.bluetooth.Constants;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 
 import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.READ_PHONE_STATE;
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class HomeActivity extends FragmentActivity {
 
@@ -85,7 +90,16 @@ public class HomeActivity extends FragmentActivity {
     private FragmentSetting fragmentSetting = new FragmentSetting();
     private FragmentPhone fragmentPhone = new FragmentPhone();
     private FragmentLocation fragmentLocation = new FragmentLocation();
-    private FragmentQuestion fragmentQuestion = new FragmentQuestion();
+    private Fragment_audio_recorder fragmentAudiorecorder = new Fragment_audio_recorder();
+
+    private static MediaRecorder myAudioRecorder;
+    private static String outputFile = null;
+    private static String mFileName = null;
+
+    class BuildDev {
+        public static final int RECORD_AUDIO = 0;
+    }
+
 
     private View.OnClickListener changeView = new View.OnClickListener() {
         @Override
@@ -105,8 +119,8 @@ public class HomeActivity extends FragmentActivity {
                 case R.id.btnSetting:
                     transaction.replace(R.id.frameLayout, fragmentSetting);
                     break;
-                case R.id.btn_question:
-                    transaction.replace(R.id.frameLayout, fragmentQuestion);
+                case R.id.btn_audioRecord:
+                    transaction.replace(R.id.frameLayout, fragmentAudiorecorder);
                     break;
             }
 //呼叫commit讓變更生效。
@@ -121,12 +135,24 @@ public class HomeActivity extends FragmentActivity {
         HomeActivity.contextOfApplication = getApplicationContext();
 
         // 取得通話全縣
-        if (  !(isGetPression(READ_PHONE_STATE)  && isGetPression(CALL_PHONE) && isGetPression(READ_CONTACTS)) ) {
+        if (  !(isGetPression(READ_PHONE_STATE)  && isGetPression(CALL_PHONE) && isGetPression(READ_CONTACTS)&& isGetPression(RECORD_AUDIO)&& isGetPression(WRITE_EXTERNAL_STORAGE)) ) {
 
-            ActivityCompat.requestPermissions(HomeActivity.this, new String[] {READ_PHONE_STATE, CALL_PHONE,READ_CONTACTS}, PackageManager.PERMISSION_GRANTED);
+            ActivityCompat.requestPermissions(HomeActivity.this, new String[] {READ_PHONE_STATE, CALL_PHONE,READ_CONTACTS,RECORD_AUDIO,WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
             return;
         }
+
+
+        outputFile = Environment.getExternalStorageDirectory().
+                getAbsolutePath() + "/myrecording.3gp";
+        ;
+
+        myAudioRecorder = new MediaRecorder();
+        myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        myAudioRecorder.setOutputFile(outputFile);
+
 
         initView();
         initData();
@@ -177,12 +203,12 @@ public class HomeActivity extends FragmentActivity {
         ImageButton btnLocation = (ImageButton)findViewById(R.id.btn_location);
         ImageButton btnHome = (ImageButton)findViewById(R.id.btnHome);
         ImageButton btnSetting = (ImageButton)findViewById(R.id.btnSetting);
-        ImageButton btnQuestion = (ImageButton)findViewById(R.id.btn_question);
+        ImageButton btnAutioRecorder = (ImageButton)findViewById(R.id.btn_audioRecord);
         btnPhone.setOnClickListener(changeView);
         btnLocation.setOnClickListener(changeView);
         btnHome.setOnClickListener(changeView);
         btnSetting.setOnClickListener(changeView);
-        btnQuestion.setOnClickListener(changeView);
+        btnAutioRecorder.setOnClickListener(changeView);
 
     }
 
@@ -265,15 +291,32 @@ public class HomeActivity extends FragmentActivity {
                         }else{
                             Toast.makeText(HomeActivity.this, "事件B：目前來電可以掛斷", Toast.LENGTH_SHORT).show();
                         }
-                    }else if(readMessage.equals( getResources().getString(R.string.alertDRingerNormalCondition))){
+                    }else if(readMessage.equals( getResources().getString(R.string.alertRingerNormalCondition))){
                         Toast.makeText(HomeActivity.this, "事件C：聲音設定為聲音模式", Toast.LENGTH_SHORT).show();
                         audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                    }else if(readMessage.equals( getResources().getString(R.string.alertCRingerSilentCondition))){
+                    }else if(readMessage.equals( getResources().getString(R.string.alertRingerSilentCondition))){
                         Toast.makeText(HomeActivity.this, "事件D：聲音設定為靜音模式", Toast.LENGTH_SHORT).show();
                         audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                    }else if(readMessage.equals( getResources().getString(R.string.alertDRingerVibrateCondition))){
+                    }else if(readMessage.equals( getResources().getString(R.string.alertRingerSilentCondition))){
                         Toast.makeText(HomeActivity.this, "事件E：聲音設定為震動模式", Toast.LENGTH_SHORT).show();
                         audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                    }else if(readMessage.equals( getResources().getString(R.string.recorderStart))){
+                        Toast.makeText(HomeActivity.this, "事件F：開始錄音", Toast.LENGTH_SHORT).show();
+                        start();
+                        fragmentAudiorecorder.start();
+                    }else if(readMessage.equals( getResources().getString(R.string.recorderStop))){
+                        Toast.makeText(HomeActivity.this, "事件G：停止錄音", Toast.LENGTH_SHORT).show();
+                        stop();
+                        fragmentAudiorecorder.stop();
+                    }else if(readMessage.equals( getResources().getString(R.string.recorderPlay))){
+
+                        try{
+                            play();
+                        }catch(IOException e){
+                            e.printStackTrace();
+                        }
+
+                        fragmentAudiorecorder.play();
                     }
 
                     break;
@@ -356,4 +399,33 @@ public class HomeActivity extends FragmentActivity {
         }
     }
 
+    // 錄音
+
+    public void start() {
+        try {
+            myAudioRecorder.prepare();
+            myAudioRecorder.start();
+        } catch (IllegalStateException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void stop() {
+        myAudioRecorder.stop();
+        myAudioRecorder.release();
+        myAudioRecorder = null;
+    }
+
+    public void play() throws IllegalArgumentException,
+            SecurityException, IllegalStateException, IOException {
+
+        MediaPlayer m = new MediaPlayer();
+        m.setDataSource(outputFile);
+        m.prepare();
+        m.start();
+    }
 }

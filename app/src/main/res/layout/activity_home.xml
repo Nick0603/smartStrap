@@ -30,7 +30,7 @@
             app:srcCompat="@drawable/phone_call" />
 
         <ImageButton
-            android:id="@+id/btn_question"
+            android:id="@+id/btn_audioRecord"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
