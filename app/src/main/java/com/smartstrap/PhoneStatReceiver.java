@@ -48,7 +48,7 @@ public class PhoneStatReceiver extends BroadcastReceiver{
 //                }
                 if(number.equals("0920909807") || number.equals("0928660419")){
                     sendMessage(sendWatchPhoneCall4);
-                    Toast.makeText(context, "四級來電", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "緊急來電", Toast.LENGTH_SHORT).show();
                 }
 
                 break;

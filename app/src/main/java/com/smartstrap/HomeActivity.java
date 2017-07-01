@@ -40,7 +40,6 @@ public class HomeActivity extends FragmentActivity {
 
     private static final String TAG = "HomeActivity";
 
-
     public static final int RINGER_MODE_SILENT = 0;
     public static final int RINGER_MODE_VIBRATE = 1;
     public static final int RINGER_MODE_NORMAL = 2;
@@ -76,6 +75,7 @@ public class HomeActivity extends FragmentActivity {
     {
         return contextOfApplication;
     }
+    public static MyDBHelper DB;
 
     private FragmentManager fragMgr;
     private FragmentTransaction transaction;
@@ -126,32 +126,8 @@ public class HomeActivity extends FragmentActivity {
             return;
         }
 
-        //取得音量控制器
-        audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-
-
-        // 使用來掛斷電話
-        telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-
-        // 元件建立
-        myVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        myMediaPlaye = MediaPlayer.create(this, R.raw.alert);
-
-        fragMgr = getSupportFragmentManager();
-        fragMgr.beginTransaction()
-                .add(R.id.frameLayout, fragmentHome)
-                .commit();
-
-        ImageButton btnPhone = (ImageButton)findViewById(R.id.btn_phoneCall);
-        ImageButton btnLocation = (ImageButton)findViewById(R.id.btn_location);
-        ImageButton btnHome = (ImageButton)findViewById(R.id.btnHome);
-        ImageButton btnSetting = (ImageButton)findViewById(R.id.btnSetting);
-        ImageButton btnQuestion = (ImageButton)findViewById(R.id.btn_question);
-        btnPhone.setOnClickListener(changeView);
-        btnLocation.setOnClickListener(changeView);
-        btnHome.setOnClickListener(changeView);
-        btnSetting.setOnClickListener(changeView);
-        btnQuestion.setOnClickListener(changeView);
+        initView();
+        initData();
 
         //bluetooth
         // 藍芽建立
@@ -193,6 +169,35 @@ public class HomeActivity extends FragmentActivity {
             // update mHandler
             HomeActivity.mBlueToothService.mHandler = mHandler;
         }
+    }
+    void initView(){
+        ImageButton btnPhone = (ImageButton)findViewById(R.id.btn_phoneCall);
+        ImageButton btnLocation = (ImageButton)findViewById(R.id.btn_location);
+        ImageButton btnHome = (ImageButton)findViewById(R.id.btnHome);
+        ImageButton btnSetting = (ImageButton)findViewById(R.id.btnSetting);
+        ImageButton btnQuestion = (ImageButton)findViewById(R.id.btn_question);
+        btnPhone.setOnClickListener(changeView);
+        btnLocation.setOnClickListener(changeView);
+        btnHome.setOnClickListener(changeView);
+        btnSetting.setOnClickListener(changeView);
+        btnQuestion.setOnClickListener(changeView);
+
+    }
+
+    void initData(){
+        //取得音量控制器
+        audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        // 使用來掛斷電話
+        telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        // 元件建立
+        myVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        myMediaPlaye = MediaPlayer.create(this, R.raw.alert);
+        fragMgr = getSupportFragmentManager();
+        fragMgr.beginTransaction()
+                .add(R.id.frameLayout, fragmentHome)
+                .commit();
+
+        DB = new MyDBHelper(this, getResources().getString(R.string.DBName), null, 1);
     }
 
     private Handler mHandler = new Handler() {
@@ -253,6 +258,7 @@ public class HomeActivity extends FragmentActivity {
                     }else if(readMessage.equals( getResources().getString(R.string.alertBPhoneEndCondition))){
                         if(phoneState == TelephonyManager.CALL_STATE_RINGING){
                             endCall();
+                            Toast.makeText(HomeActivity.this, "事件B：掛掉來電電話", Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(HomeActivity.this, "事件B：目前來電可以掛斷", Toast.LENGTH_SHORT).show();
                         }
