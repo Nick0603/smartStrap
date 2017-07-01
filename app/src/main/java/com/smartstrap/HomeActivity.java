@@ -417,7 +417,11 @@ public class HomeActivity extends FragmentActivity {
     public void stop() {
         myAudioRecorder.stop();
         myAudioRecorder.release();
-        myAudioRecorder = null;
+        myAudioRecorder = new MediaRecorder();
+        myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        myAudioRecorder.setOutputFile(outputFile);
     }
 
     public void play() throws IllegalArgumentException,
