@@ -48,6 +48,7 @@
     <string name="alertBTPositiveBtn">前往設定頁面</string>
     <string name="alertBTNegativeBtn">取消</string>
 
+    <string name="DBName">smartStrap.db</string>
 
     <!--  DeviceListActivity -->
     <string name="scanning">scanning for devices...</string>

@@ -12,16 +12,21 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.smartstrap.bluetooth.BluetoothService;
+import com.smartstrap.contact.Person;
 
 import java.util.ArrayList;
 
 
 public class PhoneStatReceiver extends BroadcastReceiver{
 
-    final static String sendWatchPhoneCall4 = "DP";
-    final static String sendWatchPhoneCall3 = "CO";
-    final static String sendWatchPhoneCall2 = "BO";
-    final static String sendWatchPhoneCall1 = "BO";
+
+    final static int PhoneCallHigh = 2;
+    final static int PhoneCallMiddle  = 1;
+    final static int PhoneCallNormal = 0;
+
+    final static String sendWatchPhoneCallHigh = "DR";
+    final static String sendWatchPhoneCallMiddle  = "CR";
+    final static String sendWatchPhoneCallNormal = "BR";
     final static String sendWatchPhoneCallEnd = "JS";
 
     String TAG = "tag";
@@ -46,9 +51,18 @@ public class PhoneStatReceiver extends BroadcastReceiver{
 //                    editor.commit();
 //                    endCall();
 //                }
-                if(number.equals("0920909807") || number.equals("0928660419")){
-                    sendMessage(sendWatchPhoneCall4);
+
+                ArrayList<Person> PersonArrayList = FragmentPhone.contactsDBArrayList ;
+                int level = getPersonLevel(PersonArrayList,number);
+                if(level == PhoneCallHigh){
+                    sendMessage(sendWatchPhoneCallHigh);
                     Toast.makeText(context, "緊急來電", Toast.LENGTH_SHORT).show();
+                }else if(level == PhoneCallMiddle){
+                    sendMessage(sendWatchPhoneCallMiddle);
+                    Toast.makeText(context, "中級來電", Toast.LENGTH_SHORT).show();
+                }else{
+                    sendMessage(sendWatchPhoneCallNormal);
+                    Toast.makeText(context, "一般來電", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -120,5 +134,27 @@ public class PhoneStatReceiver extends BroadcastReceiver{
             byte[] send = message.getBytes();
             HomeActivity.mBlueToothService.write(send);
         }
+    }
+
+    public int getPersonLevel(ArrayList<Person> arrayList, String number){
+        for(int i=0;i<arrayList.size();i++){
+            Person targetPerson = arrayList.get(i);
+            String targetNumber = targetPerson.phone;
+
+            // 去除空白 例: 0900 000 000
+            if(number.length() > 10){
+                number = number.replaceAll("\\s+", "");
+            }
+            // 去除開頭為886   例: +886900000000
+            if(number.length() > 10){
+                number = '0' + number.substring(4,9);
+            }
+
+            if(targetNumber.equals(number)){
+                Log.i(TAG,targetPerson.name);
+                return targetPerson.levelColor;
+            }
+        }
+        return 0;
     }
 }

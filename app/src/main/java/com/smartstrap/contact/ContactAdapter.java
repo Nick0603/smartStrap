@@ -50,7 +50,7 @@ public class ContactAdapter extends ArrayAdapter<Person> {
         Person person = data.get(position);
         holder.textName.setText(person.name);
         holder.textPhoneNumber.setText(person.phone);
-        holder.imgIcon.setImageResource(R.color.phoneGreen);
+        holder.imgIcon.setImageResource(levelColors[person.levelColor]);
         return row;
 
     }

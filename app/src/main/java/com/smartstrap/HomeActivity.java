@@ -44,6 +44,8 @@ public class HomeActivity extends FragmentActivity {
     public static final int RINGER_MODE_VIBRATE = 1;
     public static final int RINGER_MODE_NORMAL = 2;
 
+    public static final String DBName =  "smartStrap.db";
+
     // 音量控制
     private AudioManager audioManager;
 
@@ -197,7 +199,8 @@ public class HomeActivity extends FragmentActivity {
                 .add(R.id.frameLayout, fragmentHome)
                 .commit();
 
-        DB = new MyDBHelper(this, getResources().getString(R.string.DBName), null, 1);
+
+        DB = new MyDBHelper(this,DBName, null, 1);
     }
 
     private Handler mHandler = new Handler() {
