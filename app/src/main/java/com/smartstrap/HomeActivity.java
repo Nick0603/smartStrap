@@ -70,6 +70,13 @@ public class HomeActivity extends FragmentActivity {
     public  final String SharePreSecure = "lastConnSecure";
     public  final String SharePreAddress = "lastConnAddress";
 
+    // 給予fragment 使用 context
+    public static Context contextOfApplication;
+    public static Context getContextOfApplication()
+    {
+        return contextOfApplication;
+    }
+
     private FragmentManager fragMgr;
     private FragmentTransaction transaction;
     private FragmentHome fragmentHome = new FragmentHome();
@@ -109,6 +116,7 @@ public class HomeActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        HomeActivity.contextOfApplication = getApplicationContext();
 
         // 取得通話全縣
         if (  !(isGetPression(READ_PHONE_STATE)  && isGetPression(CALL_PHONE) && isGetPression(READ_CONTACTS)) ) {
@@ -117,6 +125,7 @@ public class HomeActivity extends FragmentActivity {
 
             return;
         }
+
         //取得音量控制器
         audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 
