@@ -23,41 +23,47 @@
         <ImageButton
             android:id="@+id/btn_phoneCall"
             android:layout_width="wrap_content"
-            android:layout_height="69dp"
+            android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:layout_weight="0.05"
-            android:background="@color/com_facebook_button_background_color_focused_disabled"
-            app:srcCompat="@android:drawable/stat_sys_vp_phone_call" />
-
-        <ImageButton
-            android:id="@+id/btn_location"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.03"
-            app:srcCompat="?android:attr/textSelectHandle" />
-
-        <ImageButton
-            android:id="@+id/btnHome"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.02"
-            android:src="@drawable/ic_home_black"
-            app:srcCompat="@drawable/ic_home_black" />
-
-        <ImageButton
-            android:id="@+id/btnSetting"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.02"
-            android:src="@drawable/ic_setting_black"
-            app:srcCompat="@drawable/ic_setting_black" />
+            android:layout_weight="1"
+            android:src="@drawable/phone_call"
+            app:srcCompat="@drawable/phone_call" />
 
         <ImageButton
             android:id="@+id/btn_question"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.03"
-            app:srcCompat="@drawable/com_facebook_button_send_icon_blue" />
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:src="@drawable/record"
+            app:srcCompat="@drawable/record" />
+
+        <ImageButton
+            android:id="@+id/btnHome"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:src="@drawable/home_page"
+            app:srcCompat="@drawable/home_page" />
+
+        <ImageButton
+            android:id="@+id/btn_location"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:src="@drawable/location"
+            app:srcCompat="@drawable/location" />
+
+        <ImageButton
+            android:id="@+id/btnSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:src="@drawable/setting"
+            app:srcCompat="@drawable/setting" />
 
     </LinearLayout>
 
