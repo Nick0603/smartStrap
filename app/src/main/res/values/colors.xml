@@ -6,8 +6,8 @@
 
     <color name="colorTabSelected">#ea7055</color>
 
-    <color name="phoneRed">#FF4081</color>
-    <color name="phoneOrange">#FF9224</color>
+    <color name="phoneRed">#FF0000</color>
+    <color name="phoneYellow">#F9F900</color>
     <color name="phoneGreen">#00A600</color>
 
 </resources>

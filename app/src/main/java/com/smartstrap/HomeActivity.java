@@ -294,12 +294,12 @@ public class HomeActivity extends FragmentActivity {
                     }else if(readMessage.equals( getResources().getString(R.string.alertRingerNormalCondition))){
                         Toast.makeText(HomeActivity.this, "事件C：聲音設定為聲音模式", Toast.LENGTH_SHORT).show();
                         audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                    }else if(readMessage.equals( getResources().getString(R.string.alertRingerSilentCondition))){
-                        Toast.makeText(HomeActivity.this, "事件D：聲音設定為靜音模式", Toast.LENGTH_SHORT).show();
-                        audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                    }else if(readMessage.equals( getResources().getString(R.string.alertRingerSilentCondition))){
-                        Toast.makeText(HomeActivity.this, "事件E：聲音設定為震動模式", Toast.LENGTH_SHORT).show();
+                    }else if(readMessage.equals( getResources().getString(R.string.alertRingerVibrateCondition))){
+                        Toast.makeText(HomeActivity.this, "事件D：聲音設定為震動模式", Toast.LENGTH_SHORT).show();
                         audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                    }else if(readMessage.equals( getResources().getString(R.string.alertRingerSilentCondition))){
+                        Toast.makeText(HomeActivity.this, "事件E：聲音設定為靜音模式", Toast.LENGTH_SHORT).show();
+                        audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                     }else if(readMessage.equals( getResources().getString(R.string.recorderStart))){
                         Toast.makeText(HomeActivity.this, "事件F：開始錄音", Toast.LENGTH_SHORT).show();
                         start();

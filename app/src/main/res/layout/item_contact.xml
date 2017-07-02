@@ -8,7 +8,7 @@
         android:id="@+id/item_levelColor"
         android:layout_width="70dp"
         android:layout_height="match_parent"
-        app:srcCompat="@color/phoneOrange" />
+        app:srcCompat="@color/phoneYellow" />
 
     <LinearLayout
         android:layout_width="wrap_content"

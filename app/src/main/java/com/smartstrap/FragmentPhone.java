@@ -25,7 +25,7 @@ import java.util.Map;
 public class FragmentPhone extends Fragment
 {
     private static final int REQUEST_CONTACTS = 1;
-    private static final int[] levelColors = {R.color.phoneGreen,R.color.phoneOrange,R.color.phoneRed};
+    private static final int[] levelColors = {R.color.phoneGreen,R.color.phoneYellow,R.color.phoneRed};
 
     public static ArrayList<Person> contactsArrayList =  new ArrayList<Person>(); ;
     public static ArrayList<Person> contactsDBArrayList = new ArrayList<Person>();;

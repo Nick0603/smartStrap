@@ -24,10 +24,10 @@ public class PhoneStatReceiver extends BroadcastReceiver{
     final static int PhoneCallMiddle  = 1;
     final static int PhoneCallNormal = 0;
 
-    final static String sendWatchPhoneCallHigh = "DR";
-    final static String sendWatchPhoneCallMiddle  = "CR";
-    final static String sendWatchPhoneCallNormal = "BR";
-    final static String sendWatchPhoneCallEnd = "JS";
+    final static String sendWatchPhoneCallHigh = "NR"; //N 紅燈閃爍     R 開震動
+    final static String sendWatchPhoneCallMiddle  = "MR"; //M 黃燈閃爍 R 開震動
+    final static String sendWatchPhoneCallNormal = "LR"; //L 綠燈閃爍 R 開震動
+    final static String sendWatchPhoneCallEnd = "JS";// J 關燈    S  關震動
 
     String TAG = "tag";
     static String LinePhoneNumber = "";

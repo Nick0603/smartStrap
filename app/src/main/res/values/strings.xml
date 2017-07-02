@@ -40,8 +40,8 @@
     <string name="alertBPhoneEndCondition">B</string>
 
     <string name="alertRingerNormalCondition">C</string>
-    <string name="alertRingerSilentCondition">D</string>
-    <string name="alertRingerVibrateCondition">E</string>
+    <string name="alertRingerVibrateCondition">D</string>
+    <string name="alertRingerSilentCondition">E</string>
 
     <string name="recorderStart">F</string>
     <string name="recorderStop">G</string>

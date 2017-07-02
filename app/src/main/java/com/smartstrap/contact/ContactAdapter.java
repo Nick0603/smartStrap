@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class ContactAdapter extends ArrayAdapter<Person> {
     Context context;
     int layoutResourceId;
-    private static final int[] levelColors = {R.color.phoneGreen,R.color.phoneOrange,R.color.phoneRed};
+    private static final int[] levelColors = {R.color.phoneGreen,R.color.phoneYellow,R.color.phoneRed};
 
     ArrayList<Person> data=new ArrayList<Person>();
     public ContactAdapter(Context context, int layoutResourceId, ArrayList<Person> data) {
